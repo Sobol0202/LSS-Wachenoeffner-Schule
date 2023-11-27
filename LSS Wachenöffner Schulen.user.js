@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         LSS Wachenöffner Schulen
 // @namespace    www.leitstellenspiel.de
-// @version      1.0
-// @description  Fügt einen Button ein um alle Wachen in der Schule zu öffnen
+// @version      1.2
+// @description  Fügt einen Button ein, um alle Wachen in der Schule zu öffnen
 // @author       MissSobol
 // @match        https://www.leitstellenspiel.de/buildings/*
+// @match        https://www.leitstellenspiel.de/schoolings/*
 // @grant        none
 // ==/UserScript==
 
@@ -61,13 +62,22 @@
 
     // Funktion zum Hinzufügen des Buttons
     function addButton() {
-        var allianceCost = $("#alliance_cost");
+        var targetElement;
 
-        // Überprüfen, ob das Element mit der ID "alliance_cost" vorhanden ist
-        if (allianceCost.length > 0) {
+        // Überprüfen, ob aktive Seite ist Buildings
+        if (window.location.href.indexOf("https://www.leitstellenspiel.de/buildings/") !== -1) {
+            targetElement = $("#alliance_cost");
+        }
+        // Überprüfen, ob aktive Seite ist schoolings
+        else if (window.location.href.indexOf("https://www.leitstellenspiel.de/schoolings/") !== -1) {
+            targetElement = $("h3:contains('Personal auswählen')");
+        }
+
+        // Überprüfen, ob das Ziel-Element vorhanden ist
+        if (targetElement && targetElement.length > 0) {
             var button = $("<button>")
                 .text("Alle Wachen öffnen")
-                .attr("id", "openAllPanelsButton") 
+                .attr("id", "openAllPanelsButton") // Eindeutige ID für den Button
                 .addClass("btn btn-xs btn-default")
                 .css({
                     "margin-left": "10px"
@@ -77,8 +87,8 @@
                     openAllPanels();
                 });
 
-            // Den Button neben das Element mit der ID "alliance_cost" einfügen
-            allianceCost.after(button);
+            // Den Button nach das Ziel-Element einfügen
+            button.insertAfter(targetElement);
         }
     }
 
